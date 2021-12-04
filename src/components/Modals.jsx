@@ -12,7 +12,7 @@ export default function Modals({changeOcultar , dataModal , user }) {
                 <div className="row">
                     <div className="col-sm-12 col-md-6">
                         <div className="input-group mb-3">
-                            <span className="input-group-text">Fecha de Inicio</span>
+                            <span className="input-group-text">Fecha de Inicioooooooooooo</span>
                             <input type="date" className="form-control"  aria-label="Username"  />
                         </div>
                     </div>
