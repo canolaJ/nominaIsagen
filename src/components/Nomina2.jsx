@@ -1,22 +1,18 @@
-import React from 'react'
-import User from './User';
+import React from 'react';
 
 
 export default function Nomina() {
-    const users =[
+    const users=[
         {id:1, nombres : "jonathan" , apellidos : "Cañola", cc : 456789233, phone : 3209874563 , username : "Totan" , 
          password : "***************" , dateEntry : "01-23-1990" , post : "Super Administrador", sexo: "m", salary : "3500000", estado : "activo"},
         {id:2, nombres : "jorge" , apellidos : "Cañola", cc : 986978423, phone : 3119874562 , username : "George" , 
          password : "***************" , dateEntry : "11-10-2002" , post : "Usuario-Nomina", sexo: "m", salary : "2500000" , estado : "activo"},
         {id:3, nombres : "jabian" , apellidos : "Monitor", cc : 986978423, phone : 3119874562 , username : "George" , 
-         password : "***************" , dateEntry : "04-23-2019" , post : "Usuario-Empleado", sexo: "m", salary : "1500000", estado : "inactivo"},
+         password : "***************" , dateEntry : "04-23-2019" , post : "Usuario-Empleado", sexo: "m", salary : "1500000", estado : "inactivo"}
     ];
-    const listUsers = users.map((user)=>
-    <User 
-    key={user.id}
-    id={user.id}
-    />);
+    
     return (
+        
         <div className="container-fluid p-5 ">
             <div className="row bg__isagen ">
                 <div className="col-md-6 mt-3 mb-3">
@@ -26,16 +22,16 @@ export default function Nomina() {
                     <button className="" id="btb__buscar">Buscar</button>
                 </div>
             </div>
-            <div className="row  ">
+            <div className="row  key={ user.id }">
             <div className="col-md-12  ">
-               <div className="row">
+               <div className="row ">
                    <div className="col-sm-12 text-center">
                         <h4 className="form-label ">Datos del empleado</h4>
                    </div>
                    <div className="col-sm-12 col-md-6">
                         <div className="input-group mb-3">
                             <span className="input-group-text  bg-secondary text-light" id="basic-addon3">Código Empleado:</span>
-                            <input type="text" className="form-control" disabled aria-describedby={listUsers.id}/>
+                            <input type="text" className="form-control" disabled aria-describedby="basic-addon3"/>
                         </div>
                    </div>
                    <div className="col-sm-12 col-md-6">
@@ -135,3 +131,4 @@ export default function Nomina() {
         </div>
     )
 }
+
