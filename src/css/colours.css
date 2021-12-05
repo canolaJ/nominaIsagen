@@ -133,6 +133,32 @@
 }
 /* warningP end*/
 
+/* infoP start*/
+.btn-infoP {
+  color: #ffffff !important;
+  background-color: #56cfe1 !important;
+  border-color: #fff !important;
+  border-radius: 10px !important;
+  -webkit-border-radius: 10px !important;
+  -moz-border-radius: 10px !important;
+  -ms-border-radius: 10px !important;
+  -o-border-radius: 10px !important;
+}
+.btn-infoP:hover,
+.btn-infoP:focus,
+.btn-infoP:active,
+.btn-infoP.active,
+.open .dropdown-toggle.btn-infoP {
+  color: #ffffff !important;
+  background-color: #F82649 !important;
+  border-color: #fff !important;
+}
+.btn-infoP .badge {
+  color: #56cfe1 !important;
+  background-color: #ffffff !important;
+}
+/* warningP end*/
+
 /* bg__persons */
 
 /* bg__primary start */

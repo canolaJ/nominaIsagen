@@ -3,22 +3,22 @@ import Navigation from "./Navigation";
 import EditProfilModal from './modals/CrudUserModal';
 import '../css/home.css';
 import { FontAwesomeIcon } from '../../node_modules/@fortawesome/react-fontawesome';
-import { faEye, faPlusCircle, faUserEdit , faCheckCircle, faTimesCircle, faUserFriends} from '../../node_modules/@fortawesome/free-solid-svg-icons';
+import { faEye, faPlusCircle, faUserEdit , faCheckCircle, faTimesCircle, faUserFriends, faSearch} from '../../node_modules/@fortawesome/free-solid-svg-icons';
 
 export default function User() {
     const [ocultar,setOcultar] = useState("ocultar");
     const [dataModal, setDataModal] = useState([]);
     const [user,setUser] = useState({});
-
-    const [users,setusers] = useState([
-        {id:1, nombres : "jonathan" , apellidos : "Cañola", cc : 456789233, phone : 3209874563 , username : "Totan" , 
+    const [users,setUsers] = useState([
+        {id:1, nombres : "jonathan" , apellidos : "cañola", cc : "456789233", phone : 3209874563 , username : "Totan" , 
          password : "***************" , dateEntry : "01-23-1990" , post : "Super Administrador", sexo: "m", salary : "3500000", estado : "activo"},
-        {id:2, nombres : "jorge" , apellidos : "Cañola", cc : 986978423, phone : 3119874562 , username : "George" , 
+        {id:2, nombres : "jorge" , apellidos : "cañola", cc : "986978423", phone : 3119874562 , username : "George" , 
          password : "***************" , dateEntry : "11-10-2002" , post : "Usuario-Nomina", sexo: "m", salary : "2500000" , estado : "activo"},
-        {id:3, nombres : "jabian" , apellidos : "Monitor", cc : 986978423, phone : 3119874562 , username : "George" , 
+        {id:3, nombres : "jabian" , apellidos : "monitor", cc : "986978423", phone : 3119874562 , username : "George" , 
          password : "***************" , dateEntry : "04-23-2019" , post : "Usuario-Empleado", sexo: "m", salary : "1500000", estado : "inactivo"},
     ]);
-
+    const [list, setList] = useState(users);
+    
     const changeBtn = () => ocultar === "ocultar" ? setOcultar("visible"): setOcultar("ocultar");
 
     const changeOcultar = (valor,dataUser) =>{
@@ -52,9 +52,10 @@ export default function User() {
         }
     }
     const searchUser = () =>{
+
         const search = document.getElementById('search').value.toLowerCase();
-        const usersFilter = users.filter(user => user.nombres === search);
-        console.log(usersFilter);
+        const usersFilter = users.filter(user => user.nombres.includes( search ) || user.apellidos.includes( search ) || user.cc.includes( search ));
+        setList(usersFilter);
     }
     return (
         <>
@@ -78,15 +79,10 @@ export default function User() {
                 </div>
             </div>
             <div className="row">
-                <div className="col-sm-6 col-md-5">
+                <div className="col-sm-12 col-md-5">
                     <div className="input-group mb-3">
-                        <select className="form-select form-select-sm" aria-label=".form-select-sm example">
-                            <option defaultValue>Nombre</option>
-                            <option value="Administrador">Administrador</option>
-                            <option value="Usuario-Nomina">Usuario-Nómina</option>
-                            <option value="Usuario-Empleado">Usuario-Empleado</option>
-                        </select>
-                        <input type="text" className="form-control" id="search" placeholder=" Que deseas buscar? " onChange={searchUser} />
+                        <span className="input-group-text"><FontAwesomeIcon icon={ faSearch } /></span>
+                        <input type="text" className="form-control" id="search" placeholder=" ¿Qué usuario deseas buscar? " onChange={searchUser} />
                     </div>
                 </div>
             </div>
@@ -108,7 +104,7 @@ export default function User() {
                             </tr>
                         </thead>
                         <tbody>
-                            { users.map((user)=>{
+                            { list.map((user)=>{
                                 return(
                                     <tr key={ user.id }>
                                         <th scope="row">{ user.nombres + " " + user.apellidos }</th>

@@ -96,9 +96,10 @@
     color: #000 !important;
   }
   .navbar-collapse{
-    margin-top: 15px !important;
+    margin-top: 8px !important;
     background-color: #fff;
     padding: 30px 20px;
+    z-index: 1000;
   }
   .nav-item button{
     background-color: #fff ;
