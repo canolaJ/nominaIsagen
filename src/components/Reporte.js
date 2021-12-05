@@ -71,7 +71,7 @@ export default function Reporte() {
                             </tr>
                             <tr className="bg__gray">
                                 <th scope="col">Nombre Completo</th>
-                                <th scope="col" >Cargo</th>
+                                <th scope="col" className="icon__sm">Cargo</th>
                                 <th scope="col">Salario</th>
                             </tr>
                         </thead>
@@ -101,7 +101,7 @@ export default function Reporte() {
                             </tr>
                             <tr className="bg__gray">
                                 <th scope="col">Nombre Completo</th>
-                                <th scope="col" >Cargo</th>
+                                <th scope="col" className="icon__sm">Cargo</th>
                                 <th scope="col">Salario</th>
                             </tr>
                         </thead>

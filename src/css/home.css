@@ -84,7 +84,17 @@
 }
 
 /* bg__primaryP end */
-
+.container__nomina{
+  width: 100vw;
+  height: 100%;
+  background: rgba(242, 243, 248);
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding: 20px;
+  box-shadow: 2px -1px 24px -6px rgb(57, 61, 61);
+  -webkit-box-shadow: 2px -1px 24px -6px rgba(39,63,63,1);
+  -moz-box-shadow: 2px -1px 24px -6px rgba(39,63,63,1);
+}
 
 /* Movil */
 
