@@ -42,6 +42,7 @@ export default function NominaModal({changeOcultar, dataUser , dataModal , list 
                                                     return(
                                                         <tr key={ user.id }>
                                                             <th scope="row">{ user.nombres + " " + user.apellidos }</th>
+                                                            <td className="icon__sm">{ user.cc }</td>
                                                             <td className="icon__sm">{ user.post }</td>
                                                             <td>
                                                                 <button className="btn btn-primaryP w-100" onClick={()=>changeOcultar(2, user)}>

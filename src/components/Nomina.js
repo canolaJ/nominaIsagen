@@ -8,14 +8,28 @@ import {  faSearch , faFilePdf, faAddressCard } from '../../node_modules/@fortaw
 export default function Nomina() {
     const fecha = new Date().toLocaleDateString();
     const users =[
-        {id:1, nombres : "jonathan" , apellidos : "Cañola", cc : "456789233", phone : 3209874563 , post : "Super Administrador",salary : "3500000", estado : "activo"},
-        {id:2, nombres : "jorge" , apellidos : "Cañola", cc : "986978423", phone : 3119874562 , post : "Usuario-Nomina",salary : "2500000" , estado : "activo"},
-        {id:3, nombres : "fabian" , apellidos : "Monitor", cc : "986978423", phone : 3119874562 , post : "Usuario-Empleado", salary : "1500000", estado : "inactivo"},
+        {id:1, nombres : "jonathan" , apellidos : "cañola", cc : "456789233", phone : 3209874563 , post : "Super Administrador",salary : "3500000", estado : "activo"},
+        {id:2, nombres : "jorge" , apellidos : "cañola", cc : "986978423", phone : 3119874562 , post : "Usuario-Nomina",salary : "2500000" , estado : "activo"},
+        {id:3, nombres : "fabian" , apellidos : "monitor", cc : "986978423", phone : 3119874562 , post : "Usuario-Empleado", salary : "1500000", estado : "inactivo"},
     ];
+
+    const permisos =[
+        {id:1, id_user: 1 , type_solicitud : "vacaciones" ,remunerado :"si",  nombres : "jonathan" , apellidos : "cañola", cc : "456789233", dateExit : "01-28-2021", dateEntry : "01-30-2021" , post : "Super Administrador", estado : "activo" , userPost : "jonathan" , result : "aprobado"},
+        {id:2, id_user: 2, type_solicitud : "permiso"  ,remunerado :"no", nombres : "jorge" , apellidos : "cañola", cc : "986978423",dateExit : "07-14-2021" , dateEntry : "08-02-2021" , post : "Usuario-Nomina", estado : "activo" , userPost : "jonathan" , result : "negado"},
+        {id:3, id_user: 3, type_solicitud : "permiso"  ,remunerado :"si", nombres : "fabian" , apellidos : "monitor", cc : "986978423", dateExit : "11-29-2021",  dateEntry : "11-30-2021" , post : "Usuario-Empleado",  estado : "inactivo" , userPost : "jonathan" , result : "proceso"},
+        {id:4, id_user: 1 , type_solicitud : "permiso" ,remunerado :"no",  nombres : "jonathan" , apellidos : "cañola", cc : "456789233", dateExit : "01-28-2021", dateEntry : "01-30-2021" , post : "Super Administrador", estado : "activo" , userPost : "jonathan" , result : "aprobado"},
+        {id:5, id_user: 2, type_solicitud : "permiso"  ,remunerado :"no", nombres : "jorge" , apellidos : "cañola", cc : "986978423",dateExit : "07-14-2021" , dateEntry : "07-15-2021" , post : "Usuario-Nomina", estado : "activo" , userPost : "jonathan" , result : "negado"},
+        {id:6, id_user: 3, type_solicitud : "permiso"  ,remunerado :"si", nombres : "fabian" , apellidos : "monitor", cc : "986978423", dateExit : "11-29-2021",  dateEntry : "11-30-2021" , post : "Usuario-Empleado",  estado : "inactivo" , userPost : "jonathan" , result : "proceso"},
+        {id:7, id_user: 2, type_solicitud : "permiso"  ,remunerado :"no", nombres : "jorge" , apellidos : "cañola", cc : "986978423",dateExit : "07-18-2021" , dateEntry : "07-20-2021" , post : "Usuario-Nomina", estado : "activo" , userPost : "jonathan" , result : "negado"},
+    ];
+
     const [list,setList] = useState([]);
     const [ocultar,setOcultar] = useState("ocultar");
     const [dataModal, setDataModal] = useState([]);
     const [userSelected, setUserSelected] = useState([]);
+    const [value_permission, setValue_permission] = useState(0);
+    const [value_vacaciones, setValue_vacaciones] = useState(0);
+    const [value_total, setValue_total] = useState(0);
     const changeBtn = () => ocultar === "ocultar" ? setOcultar("visible"): setOcultar("ocultar");
 
     const dataUser = (data) =>{
@@ -23,6 +37,28 @@ export default function Nomina() {
         console.log(data);
     }
 
+    const permissionUser = (user_id) => {
+        let number_days = 0;
+        let vaciones = 0;
+        setValue_permission(0);
+        permisos.forEach(permiso => {
+            if(permiso.remunerado === 'no' && permiso.id_user === user_id && permiso.type_solicitud === "permiso"){
+                number_days = ((new Date(permiso.dateExit) - new Date(permiso.dateEntry))/-86400)/1000;
+                number_days += number_days;
+            }
+            else if(permiso.remunerado === 'si' && permiso.id_user === user_id && permiso.type_solicitud === "vacaciones"){
+                vaciones = ((new Date(permiso.dateExit) - new Date(permiso.dateEntry))/-86400)/1000;
+                vaciones += vaciones;
+            }
+        });
+        let user = users.find(user => user.id === user_id);
+        let days_permission = ((parseInt(user.salary)/30)*number_days).toFixed(0);
+        let days_vacaciones = ((parseInt(user.salary)/30)*vaciones).toFixed(0);
+        let totalToPay = parseInt(user.salary) - (parseInt(days_permission)) + (parseInt(days_vacaciones));
+        setValue_permission(days_permission);
+        setValue_vacaciones(days_vacaciones)
+        setValue_total(totalToPay);
+    }
     const changeOcultar = (valor,data) =>{
         switch (valor) {
             case 1:
@@ -33,6 +69,7 @@ export default function Nomina() {
 
             case 2:
                 dataUser(data);
+                permissionUser(data.id);
                 changeBtn();
                 break;
             default:
@@ -50,7 +87,7 @@ export default function Nomina() {
                 <NominaModal changeOcultar={changeOcultar} dataUser={ dataUser } dataModal = {dataModal} list = { list }/>
             </div>
             <Navigation />
-            <div className="container container__nomina">
+            <div className="container container__nomina p-md-4">
                 <div className="row mb-2">
                     <div className="col-sm-12 col-md-12">
                         <div className="row">
@@ -148,10 +185,10 @@ export default function Nomina() {
                                         <h6>Vacaciones Remuneradas</h6>
                                     </td>
                                     <td className="text-center">
-                                        <h6>0</h6>
+                                        <h6>$0</h6>
                                     </td>
                                     <td className="text-end">
-                                        <h6>$500.000</h6>
+                                        <h6>{ "$" + value_vacaciones }</h6>
                                     </td>
                                 </tr>
                                 <tr>
@@ -167,24 +204,13 @@ export default function Nomina() {
                                 </tr>
                                 <tr>
                                     <td>
-                                        <h6>Permisos Remunerados</h6>
-                                    </td>
-                                    <td className="text-center">
-                                        <h6>$0</h6>
-                                    </td>
-                                    <td className="text-end">
-                                        <h6>$0</h6>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
                                         <h6>Permisos No Remunerados</h6>
                                     </td>
                                     <td className="text-center">
-                                        <h6>$75.000</h6>
+                                        <h6>{ "$" + value_permission }</h6>
                                     </td>
                                     <td className="text-end">
-                                        <h6>-$75.000</h6>
+                                    <h6>{ "$ -" + value_permission }</h6>
                                     </td>
                                 </tr>
                             </tbody>
@@ -194,7 +220,7 @@ export default function Nomina() {
                                         <h5>Total Pagado (Total-Deducción)</h5>
                                     </td>
                                     <td className="text-end">
-                                        <h6>$425.000</h6> 
+                                        <h6>{ "$" + value_total }</h6>
                                     </td>
                                 </tr>
                             </tfoot>
