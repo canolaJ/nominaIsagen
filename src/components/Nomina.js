@@ -1,9 +1,11 @@
 import React,{useState} from 'react'
 import Navigation from "./Navigation";
 import NominaModal from './modals/NominaModal';
+import NominaPdf from './pdf/NominaPdf';
 import '../css/home.css';
 import { FontAwesomeIcon } from '../../node_modules/@fortawesome/react-fontawesome';
 import {  faSearch , faFilePdf, faAddressCard } from '../../node_modules/@fortawesome/free-solid-svg-icons';
+import { PDFDownloadLink } from '../../node_modules/@react-pdf/renderer';
 
 export default function Nomina() {
     const fecha = new Date().toLocaleDateString();
@@ -93,11 +95,25 @@ export default function Nomina() {
                         <div className="row">
                             <div className="col-sm-12 col-sm-4 d-flex flex-row align-items-center justify-content-between">
                                 <h3 className="ms-2"><FontAwesomeIcon icon={ faAddressCard } /> Nómina</h3>
-                                <button 
-                                    type="button" 
-                                    className="btn btn-successP me-sm-1 me-lg-0" 
-                                    onClick={()=>changeOcultar(1)}> <FontAwesomeIcon icon={ faFilePdf } /> Generar Nómina
-                                </button>
+                                <PDFDownloadLink 
+                                    document={ <NominaPdf userSelected = { userSelected } value_vacaciones = { value_vacaciones } value_permission = { value_permission } value_total = {value_total }/> } 
+                                    fileName="nomina.pdf">
+                                    <button
+                                        type="button"
+                                        className="btn btn-successP me-sm-1 me-lg-0">
+                                        <FontAwesomeIcon icon={ faFilePdf } /> Generar Nómina
+                                    </button>
+                                </PDFDownloadLink>
+                                {/* <PDFDownloadLink 
+                                    document={ <NominaPdf userSelected = { userSelected } /> } 
+                                    fileName="nomina.pdf">
+                                    <button
+                                        type="button"
+                                        className="btn btn-successP me-sm-1 me-lg-0">
+                                        <FontAwesomeIcon icon={ faFilePdf } /> Generar Nómina
+                                    </button>
+                                </PDFDownloadLink> */}
+
                             </div>
                         </div>
                     </div>
