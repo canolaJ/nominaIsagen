@@ -104,16 +104,6 @@ export default function Nomina() {
                                         <FontAwesomeIcon icon={ faFilePdf } /> Generar Nómina
                                     </button>
                                 </PDFDownloadLink>
-                                {/* <PDFDownloadLink 
-                                    document={ <NominaPdf userSelected = { userSelected } /> } 
-                                    fileName="nomina.pdf">
-                                    <button
-                                        type="button"
-                                        className="btn btn-successP me-sm-1 me-lg-0">
-                                        <FontAwesomeIcon icon={ faFilePdf } /> Generar Nómina
-                                    </button>
-                                </PDFDownloadLink> */}
-
                             </div>
                         </div>
                     </div>
