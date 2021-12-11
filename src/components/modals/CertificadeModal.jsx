@@ -43,8 +43,8 @@ export default function CertificadeModal({changeOcultar , dataModal , user }) {
                 <div className="modal-footer">
                     <button type="button" className="btn btn-dangerP" onClick={()=>changeOcultar(dataModal[0])}>Cerrar</button>
                     {/* { btnSend && <button type="button" className="btn btn-successP">{ dataModal[2] }</button>} */}
-                    <PDFDownloadLink 
-                        document={ <CertificadePdf user = { user } /> } 
+                    <PDFDownloadLink
+                        document={ <CertificadePdf user = { user } /> }
                         fileName="certificadoLaboral.pdf">
                          { btnSend && <button type="button" className="btn btn-successP">{ dataModal[2] }</button>}
                     </PDFDownloadLink>
