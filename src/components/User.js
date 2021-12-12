@@ -1,22 +1,19 @@
-import React,{useState} from 'react'
+import React,{useState, useEffect} from 'react'
 import Navigation from "./Navigation";
+import axios from 'axios';
 import EditProfilModal from './modals/CrudUserModal';
 import '../css/home.css';
 import { FontAwesomeIcon } from '../../node_modules/@fortawesome/react-fontawesome';
 import { faEye, faPlusCircle, faUserEdit , faCheckCircle, faTimesCircle, faUserFriends, faSearch} from '../../node_modules/@fortawesome/free-solid-svg-icons';
 
 export default function User() {
+    useEffect(()=>{
+        getAllUsers();
+    },[])
     const [ocultar,setOcultar] = useState("ocultar");
     const [dataModal, setDataModal] = useState([]);
     const [user,setUser] = useState({});
-    const [users,setUsers] = useState([
-        {id:1, nombres : "jonathan" , apellidos : "cañola", cc : "456789233", phone : 3209874563 , username : "Totan" , 
-         password : "***************" , dateEntry : "01-23-1990" , post : "Super Administrador", sexo: "m", salary : "3500000", estado : "activo"},
-        {id:2, nombres : "jorge" , apellidos : "cañola", cc : "986978423", phone : 3119874562 , username : "George" , 
-         password : "***************" , dateEntry : "11-10-2002" , post : "Usuario-Nomina", sexo: "m", salary : "2500000" , estado : "activo"},
-        {id:3, nombres : "jabian" , apellidos : "monitor", cc : "986978423", phone : 3119874562 , username : "George" , 
-         password : "***************" , dateEntry : "04-23-2019" , post : "Usuario-Empleado", sexo: "m", salary : "1500000", estado : "inactivo"},
-    ]);
+    const [users,setUsers] = useState([]);
     const [list, setList] = useState(users);
     
     const changeBtn = () => ocultar === "ocultar" ? setOcultar("visible"): setOcultar("ocultar");
@@ -52,10 +49,16 @@ export default function User() {
         }
     }
     const searchUser = () =>{
-
         const search = document.getElementById('search').value.toLowerCase();
         const usersFilter = users.filter(user => user.nombres.includes( search ) || user.apellidos.includes( search ) || user.cc.includes( search ));
         setList(usersFilter);
+    }
+
+    const getAllUsers = async ()=>{
+        const url = 'http://localhost:4000/user/';
+        const allUsers = await axios.get(url);
+        setUsers(allUsers.data.users);
+        setList(allUsers.data.users);
     }
     return (
         <>
