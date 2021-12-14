@@ -1,5 +1,4 @@
 import React,{useState} from 'react'
-import Navigation from "./Navigation";
 import SolicitudesModal from './modals/SolicitudesModal';
 import '../css/home.css';
 import { FontAwesomeIcon } from '../../node_modules/@fortawesome/react-fontawesome';
@@ -43,7 +42,6 @@ export default function Permisos() {
         <div className={ocultar}>
             <SolicitudesModal changeOcultar={changeOcultar} dataModal = {dataModal} user = {user}/>
         </div>
-        <Navigation />
         <div className="container container__home">
             <div className="row mb-2">
                 <div className="col-sm-12 col-md-12">

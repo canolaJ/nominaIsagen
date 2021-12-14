@@ -1,5 +1,5 @@
 import React from 'react';
-import { Page, Text, View, Document, StyleSheet ,Svg, Image } from '../../../node_modules/@react-pdf/renderer';
+import { Page, Text, View, Document, StyleSheet, Image } from '../../../node_modules/@react-pdf/renderer';
 import logo from '../../assent/logo.jpg';
 // Create styles
 const styles = StyleSheet.create({

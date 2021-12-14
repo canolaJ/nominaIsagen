@@ -1,5 +1,4 @@
-import React,{useState} from 'react'
-import Navigation from "./Navigation";
+import React,{useState, useContext} from 'react'
 import CertificadeModal from './modals/CertificadeModal';
 import RequestModal from './modals/RequestModal';
 import CopyModal from './modals/CopyModal';
@@ -8,11 +7,14 @@ import logo from '../assent/logo.svg';
 import '../css/home.css';
 import { FontAwesomeIcon } from '../../node_modules/@fortawesome/react-fontawesome';
 import { faCertificate, faPlusCircle, faFileImport, faUserEdit , faCheckCircle, faTimesCircle, faSync} from '../../node_modules/@fortawesome/free-solid-svg-icons';
+import { AuthContext } from '../auth/authContext';
 
 export default function Home() {
+    const { userData } = useContext( AuthContext );
+    const [user, setUser] = useState(userData);
     const [ocultar,setOcultar] = useState(["ocultar","ocultar","ocultar","ocultar"]);
     const [dataModal, setDataModal] = useState([]);
-    // const [content,setContent] = useState(0);
+
     const [solicitudes,setSolicitudes] = useState([
         {id : 1,fecha : '10-01-2021' , tipoSolicitud : 'Permiso', estado : 'Aprobado'},
         {id : 2,fecha : '12-02-2021' , tipoSolicitud : 'Vacaciones', estado : 'Negado'},
@@ -22,11 +24,6 @@ export default function Home() {
         {id : 6,fecha : '24-11-2021' , tipoSolicitud : 'Permiso',  estado : 'Negado'},
     ]);
 
-    const user = {id:1, nombres : "Jonathan" , apellidos : "Cañola", 
-                    cc : 456789233, phone : 3209874563 , username : "Totan" , 
-                    password : "***************" , dateEntry : "01-23-1990" , post : "Super Administrador",
-                 sexo: "m", salary : "3500000", estado : "activo"}
-    
     const changeBtn = (valor) => valor === "ocultar" ? "visible":"ocultar";
 
     const changeOcultar = (valor) =>{
@@ -70,10 +67,8 @@ export default function Home() {
                 <CopyModal changeOcultar={changeOcultar} dataModal = {dataModal} user = { user }/>
             </div>
             <div className={ocultar[3]}>
-                <EditProfilModal changeOcultar={changeOcultar} dataModal = {dataModal} user = { user }/>
+                <EditProfilModal changeOcultar={changeOcultar} setUser={setUser} dataModal = {dataModal} user = { user }/>
             </div>
-            
-            <Navigation />
             <div className="container container__home">
                 <div className="row">
                     <div className="col-sm-12 col-md-12 ">

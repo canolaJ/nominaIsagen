@@ -1,5 +1,4 @@
 import React,{useState} from 'react'
-import Navigation from "./Navigation";
 import NominaModal from './modals/NominaModal';
 import NominaPdf from './pdf/NominaPdf';
 import '../css/home.css';
@@ -88,7 +87,6 @@ export default function Nomina() {
             <div className={ocultar}>
                 <NominaModal changeOcultar={changeOcultar} dataUser={ dataUser } dataModal = {dataModal} list = { list }/>
             </div>
-            <Navigation />
             <div className="container container__nomina p-md-4">
                 <div className="row mb-2">
                     <div className="col-sm-12 col-md-12">

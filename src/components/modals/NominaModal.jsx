@@ -1,6 +1,6 @@
 import React from 'react'
 import { FontAwesomeIcon } from '../../../node_modules/@fortawesome/react-fontawesome';
-import { faEye, faPlusCircle, faUserEdit , faCheckCircle, faTimesCircle, faHeartBroken} from '../../../node_modules/@fortawesome/free-solid-svg-icons';
+import { faCheckCircle, faHeartBroken} from '../../../node_modules/@fortawesome/free-solid-svg-icons';
 
 
 export default function NominaModal({changeOcultar, dataUser , dataModal , list }) {

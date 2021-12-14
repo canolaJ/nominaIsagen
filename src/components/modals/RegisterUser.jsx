@@ -4,21 +4,12 @@ import { faExclamationTriangle,} from '../../../node_modules/@fortawesome/free-s
 import axios from 'axios';
 import Swal from '../../../node_modules/sweetalert2'
 
-export default function EditProfilModal({changeOcultar , dataModal , user, setUser,  getAllUsers }) {
+export default function RegisterUser({changeOcultar , dataModal , setUser,  getAllUsers }) {
 
     const btnSend = dataModal[2];
-    const formData = document.querySelectorAll('.form__disabled');
-    if(btnSend === null){
-        formData.forEach(function(element)  {
-            element.setAttribute("disabled", "");
-        });
-    }else{
-        formData.forEach(function(element)  {
-            element.removeAttribute("disabled");
-        });
-    }
+
     const [error, setError] = useState('');
-    const form = document.forms['form-user'];
+    const form = document.forms['form-userR'];
 
     const addClass = (result,nombre) =>{
         if(result === true ){
@@ -30,7 +21,7 @@ export default function EditProfilModal({changeOcultar , dataModal , user, setUs
         }
     }
 
-    const validateField = (number, nombre)=>{
+    const validateFieldR = (number, nombre)=>{
         let result = '';
         let dato = '';
         const exNA = /^[a-záéíóúñ ]{1,15}$/;
@@ -64,30 +55,46 @@ export default function EditProfilModal({changeOcultar , dataModal , user, setUs
                 break;
         }
     }
-    const userUpdate = (nombres, apellidos, cc, phone, username, password, sexo)=>{
-        const url = "http://localhost:4000/user/userUpdate";
-        axios.put(url, {
-            _id : user._id,
+
+    const userCreate = (nombres, apellidos, cc, phone, username, password, sexo , post, dateEntry, salary, estado)=>{
+        const url = "http://localhost:4000/user/create";
+        axios.post(url, {
             nombres,
             apellidos,
-            cc ,
+            cc,
             phone,
             username,
             password,
-            sexo
+            sexo,
+            post,
+            dateEntry,
+            salary,
+            estado
           })
           .then(function (response) {
             const resp = response.data['isOk'];
             if(resp){
+                getAllUsers();
                 document.getElementById('closed__modal').click();
                 Swal.fire({
-                    title: 'Actualizado!',
-                    text: 'Tu perfil se actualizo con éxito!',
+                    title: 'Registrado!',
+                    text: 'Usuario Registrado con éxito!',
                     icon: 'success',
                     confirmButtonText: 'Aceptar'
                 })
-                getUser();
-
+                setUser({
+                    nombres : "",
+                    apellidos : "",
+                    cc : "",
+                    phone : "",
+                    username : "",
+                    password : "",
+                    sexo : "",
+                    post : "",
+                    dateEntry : "",
+                    salary : "",
+                    estado : "",
+                });
             }else{
                 setError('No registrado, El nombre de usuario ya esta en uso!');
             }
@@ -96,44 +103,34 @@ export default function EditProfilModal({changeOcultar , dataModal , user, setUs
             console.log(error);
           });
     }
+
+
     const validateFields = ()=>{
         setError(false);
-        const form = document.forms['form-user'];
-        let nombres = form['nombres'].value;
-        let apellidos = form['apellidos'].value;
-        let cc = form['cc'].value;
-        let phone = form['phone'].value;
-        let username = form['username'].value;
-        let password = form['password'].value;
-        let sexo = form['sexo'].value;
+        const form = document.forms['form-userR'];
+        const nombres = form['nombresR'].value;
+        const apellidos = form['apellidosR'].value;
+        const cc = form['ccR'].value;
+        const phone = form['phoneR'].value;
+        const username = form['usernameR'].value;
+        const password = form['passwordR'].value;
+        const sexo = form['sexoR'].value;
+        const post = form['postR'].value;
+        const dateEntry = form['dateEntryR'].value;
+        const salary = form['salaryR'].value;
+        const estado = form['estadoR'].value;
 
-        nombres = nombres ? nombres : user.nombres;
-        apellidos = apellidos ? apellidos : user.apellidos;
-        cc = cc ? cc : user.cc;
-        phone = phone ? phone : user.phone;
-        username = username ? username : user.username;
-        password = password ? password : user.password;
-        sexo = sexo ? sexo : user.sexo;
+        if(nombres && apellidos && cc && phone && username && password && sexo !== "Seleccione el sexo"
+            && post !== 'Seleccione Tipo de Usuario' && dateEntry && salary && 
+            estado !== 'Seleccione el estado del Usuario'
+            ){
 
-        userUpdate(nombres,apellidos, cc, phone, username, password, sexo);
+            userCreate(nombres,apellidos, cc, phone, username, password, sexo , post, dateEntry, salary, estado );
 
+        }else{
+            setError('faltan campos por llenar');
+        }
 
-    }
-
-    const getUser = async ()=>{
-        const url = 'http://localhost:4000/user/searchUser';
-        let findUser = "";
-        axios.post(url, {
-            _id:user._id
-          })
-          .then(function (response) {
-            findUser = response.data.user;
-            setUser(findUser);
-
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
     }
 
     return (
@@ -146,58 +143,97 @@ export default function EditProfilModal({changeOcultar , dataModal , user, setUs
                     <button type="button" className="btn-close" onClick={()=>changeOcultar(dataModal[0])}></button>
                 </div>
                 <div className="modal-body">
-                    <form id="form-user">
+                    <form id="form-userR">
                         <div className="container-fluid">
                             <div className="row">
                                 <div className="col-sm-12 col-md-6">
                                     <div className="input-group mb-3">
                                         <span className="input-group-text">Nombres</span>
-                                        <input type="text" id="nombres" className="form-control form__disabled" name="nombres"  placeholder={ user.nombres }  aria-label="Username" onChange={()=>validateField(1,'nombres')} />
+                                        <input type="text" id="nombresR" className="form-control"  aria-label="Username" onChange={()=>validateFieldR(1,'nombresR')} />
                                     </div>
                                 </div>
                                 <div className="col-sm-12 col-md-6">
                                     <div className="input-group mb-3">
                                         <span className="input-group-text">Apellidos</span>
-                                        <input type="text" id="apellidos" className="form-control form__disabled"  placeholder={ user.apellidos } aria-label="Username" onChange={()=>validateField(1,'apellidos')}/>
+                                        <input type="text" id="apellidosR" className="form-control"  aria-label="Username" onChange={()=>validateFieldR(1,'apellidosR')}/>
                                     </div>
                                 </div>
                                 <div className="col-sm-12 col-md-6">
                                     <div className="input-group mb-3">
                                         <span className="input-group-text">Cédula</span>
-                                        <input type="text" id="cc" className="form-control form__disabled"  placeholder={ user.cc } aria-label="Username" onChange={()=>validateField(2,'cc')} />
+                                        <input type="text" id="ccR" className="form-control" aria-label="Username" onChange={()=>validateFieldR(2,'ccR')} />
                                     </div>
                                 </div>
                                 <div className="col-sm-12 col-md-6">
                                     <div className="input-group mb-3">
                                         <span className="input-group-text">Teléfono</span>
-                                        <input type="text" id="phone" className="form-control form__disabled" placeholder={ user.phone } aria-label="Username" onChange={()=>validateField(2,'phone')} />
+                                        <input type="text" id="phoneR" className="form-control"  aria-label="Username" onChange={()=>validateFieldR(2,'phoneR')} />
                                     </div>
                                 </div>
                                 <div className="col-sm-12 col-md-6">
                                     <div className="input-group mb-3">
                                         <span className="input-group-text">Usuario</span>
-                                        <input type="text" id="username" className="form-control form__disabled" placeholder={ user.username } aria-label="Username" onChange={()=>validateField(3,'username')} />
+                                        <input type="text" id="usernameR" className="form-control" aria-label="Username" onChange={()=>validateFieldR(3,'usernameR')} />
                                     </div>
                                 </div>
                                 <div className="col-sm-12 col-md-6">
                                     <div className="input-group mb-3">
                                         <span className="input-group-text">Contraseña</span>
-                                        <input type="password" id="password" className="form-control form__disabled" placeholder="****************" aria-label="Username"  onChange={()=>validateField(4,'password')} />
+                                        <input type="password" id="passwordR" className="form-control" aria-label="Username"  onChange={()=>validateFieldR(4,'passwordR')} />
                                     </div>
                                 </div>
                                 <div className="col-sm-12 col-md-6">
                                     <div className="input-group mb-3">
                                         <span className="input-group-text">Sexo</span>
-                                        <select className="form-select form-select-sm form__disabled" id="sexo" aria-label=".form-select-sm example">
-                                            <option defaultValue>{ user.sexo ? user.sexo : "Seleccione el sexo" }</option>
+                                        <select className="form-select form-select-sm" id="sexoR" aria-label=".form-select-sm example">
+                                            <option defaultValue>"Seleccione el sexo" </option>
                                             <option value="masculino">Masculino</option>
                                             <option value="femenino">femenino</option>
                                             <option value="otro">Otro</option>
                                         </select>
                                     </div>
                                 </div>
-                                <p><strong className='text-danger'>*</strong> La contraseña debe tener al entre 6 y 16 caracteres, al menos un dígito, al menos una minúscula y al menos una mayúscula.
-                                    NO puede tener otros símbolos.</p>
+                                {dataModal[3] &&
+                                <>
+                                <div className="col-sm-12 col-md-6">
+                                    <div className="input-group mb-3">
+                                        <span className="input-group-text">Tipo Usuario</span>
+                                        <select className="form-select form-select-sm" id="postR" aria-label=".form-select-sm example">
+                                            <option defaultValue>"Seleccione Tipo de Usuario"</option>
+                                            <option value="Administrador">Administrador</option>
+                                            <option value="Usuario-Nomina">Usuario-Nómina</option>
+                                            <option value="Usuario-Empleado">Usuario-Empleado</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="col-sm-12 col-md-6">
+                                    <div className="input-group mb-3">
+                                        <span className="input-group-text">Fecha de Ingreso</span>
+                                        <input type="date" id="dateEntryR" className="form-control"  aria-label="Username"  />
+                                    </div>
+                                </div>
+                                <div className="col-sm-12 col-md-6">
+                                    <div className="input-group mb-3">
+                                        <span className="input-group-text">Salario</span>
+                                        <input type="text" id="salaryR" className="form-control"  aria-label="Username"  onChange={()=>validateFieldR(2,'salaryR')}/>
+                                    </div>
+                                </div>
+                                <div className="col-sm-12 col-md-6">
+                                    <div className="input-group mb-3">
+                                        <span className="input-group-text">Estado</span>
+                                        <select className="form-select form-select-sm" id='estadoR' aria-label=".form-select-sm example">
+                                            <option defaultValue>"Seleccione el estado del Usuario"</option>
+                                            <option value="activo">Activo</option>
+                                            <option value="inactivo">Inactivo</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p><strong className='text-danger'>*</strong> La contraseña debe tener al entre 6 y 16 caracteres, al menos un dígito, al menos una minúscula y al menos una mayúscula.
+                                        NO puede tener otros símbolos.</p>
+                                </div>
+                                </>
+                                }
                                 {error &&
                                 <div className="col-sm-12">
                                     <div className="alert alert-danger alert-dismissible fade show" role="alert">
