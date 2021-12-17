@@ -66,7 +66,10 @@ export default function Navigation() {
                                 <NavLink className="nav-link" aria-current="page" to='/admin/reporte'><FontAwesomeIcon icon={faFileDownload} /> Reportes</NavLink>
                             </li>
                             <li className="nav-item">
-                                <NavLink className="nav-link" aria-current="page" to='/admin/nomina'><FontAwesomeIcon icon={faAddressCard} /> Nómina</NavLink>
+                                <NavLink className="nav-link" aria-current="page" to='/admin/nomina'><FontAwesomeIcon icon={faAddressCard} /> Crear Nómina</NavLink>
+                            </li>
+                            <li className="nav-item">
+                                <NavLink className="nav-link" aria-current="page" to='/admin/payRoll'><FontAwesomeIcon icon={faAddressCard} /> Nóminas</NavLink>
                             </li>
                         </ul>
                         <div>

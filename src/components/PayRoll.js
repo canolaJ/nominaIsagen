@@ -2,14 +2,13 @@ import React,{useState, useEffect} from 'react'
 import axios from 'axios';
 import Swal from '../../node_modules/sweetalert2';
 import ViewUpdateUser from './modals/ViewUpdateUser';
-import RegisterUser from './modals/RegisterUser';
 import '../css/home.css';
 import { FontAwesomeIcon } from '../../node_modules/@fortawesome/react-fontawesome';
-import { faEye, faPlusCircle, faUserEdit , faCheckCircle, faTimesCircle, faUserFriends, faSearch} from '../../node_modules/@fortawesome/free-solid-svg-icons';
+import { faFile ,faEye,  faCheckCircle, faTimesCircle, faSearch} from '../../node_modules/@fortawesome/free-solid-svg-icons';
 
-export default function User() {
+export default function PayRoll() {
     useEffect(()=>{
-        getAllUsers(); 
+        getPayRolls(); 
     },[])
     const [dataModal, setDataModal] = useState([]);
     const [user,setUser] = useState({
@@ -25,8 +24,8 @@ export default function User() {
         salary : "",
         estado : "",
     });
-    const [users,setUsers] = useState([]);
-    const [list, setList] = useState(users);
+    const [payRoll,setPayRoll] = useState([]);
+    const [list, setList] = useState(payRoll);
 
     const changeOcultar = (valor,dataUser) =>{
         let view = "";
@@ -68,15 +67,17 @@ export default function User() {
     }
     const searchUser = () =>{
         const search = document.getElementById('search').value.toLowerCase();
-        const usersFilter = users.filter(user => user.nombres.includes( search ) || user.apellidos.includes( search ) || user.cc.includes( search ));
+        const usersFilter = payRoll.filter(user => user.nombres.includes( search ) || user.apellidos.includes( search ) || user.cc.includes( search ));
         setList(usersFilter);
     }
 
-    const getAllUsers = async ()=>{
-        const url = 'http://localhost:4000/user/';
-        const allUsers = await axios.get(url);
-        setUsers(allUsers.data.users);
-        setList(allUsers.data.users);
+    const getPayRolls = async ()=>{
+        const url = 'http://localhost:4000/payRoll';
+        const payRolls = await axios.get(url);
+        const payRollData = payRolls.data.payRoll;
+        console.log(payRolls.data.payRoll)
+        setPayRoll(payRollData);
+        setList(payRollData);
     }
 
     const activeUser = (user , number) =>{
@@ -100,7 +101,7 @@ export default function User() {
                     estado :  estadoUser
                 })
                 .then(response => {
-                    getAllUsers();
+                    // getAllUsers();
                 })
                 .catch(error => {
                     console.error(error);
@@ -120,18 +121,10 @@ export default function User() {
         <div className="ocultar" id='viewUser'>
             <ViewUpdateUser
                 changeOcultar={changeOcultar}
-                getAllUsers={getAllUsers}
+                // getAllUsers={getAllUsers}
                 setUser={setUser}
                 dataModal = {dataModal}
                 user = {user}
-            />
-        </div>
-        <div className="ocultar" id='registrarUser'>
-            <RegisterUser
-                changeOcultar={changeOcultar}
-                getAllUsers={getAllUsers}
-                setUser={setUser}
-                dataModal = {dataModal}
             />
         </div>
         <div className="container container__home">
@@ -139,12 +132,7 @@ export default function User() {
                 <div className="col-sm-12 col-md-12">
                     <div className="row">
                         <div className="col-sm-12 col-sm-4 d-flex flex-row align-items-center justify-content-between">
-                            <h3 className="ms-2"><FontAwesomeIcon icon={faUserFriends} /> Usuarios</h3>
-                            <button 
-                                type="button" 
-                                className="btn btn-successP me-sm-1 me-lg-0" 
-                                onClick={()=>changeOcultar(1)}><FontAwesomeIcon icon={faPlusCircle} /> Registrar Usuario
-                            </button>
+                            <h3 className="ms-2"><FontAwesomeIcon icon={ faFile } /> Nóminas</h3>
                         </div>
                     </div>
                 </div>
@@ -164,39 +152,36 @@ export default function User() {
                         <thead>
                             <tr className="text-center bg__primary">
                                 <th colSpan="4">
-                                        <h3>Usuarios</h3>
+                                        <h3>Nóminas</h3>
                                 </th>
                             </tr>
-                            <tr className="bg__gray">
+                            <tr className="bg__gray text-center">
                                 <th scope="col">Nombre Completo</th>
-                                <th scope="col" className="icon__sm">Teléfono</th>
+                                <th scope="col" className="icon__sm">Fecha de creación</th>
                                 <th scope="col">Tipo de usuario</th>
-                                <th scope="col">Estado</th>
+                                <th scope="col">Información</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            { list.map((user)=>{
+                        <tbody className="text-center">
+                            { list.map((payRoll)=>{
                                 return(
-                                    <tr key={ user._id }>
-                                        <th scope="row">{ user.nombres + " " + user.apellidos }</th>
-                                        <td className="icon__sm">{ user.phone }</td>
-                                        <td>{ user.post }</td>
+                                    <tr key={ payRoll._id }>
+                                        <th scope="row">{ payRoll.payRollAuthor["nombres"] + " " + payRoll.payRollAuthor["apellidos"] }</th>
+                                        <td className="icon__sm">{ payRoll.dateGenerated }</td>
+                                        <td>{ payRoll.payRollAuthor["post"] }</td>
                                         <td>
                                             <div className="d-flex flex-sm-row">
-                                                <button className="btn btn-primaryP" onClick={()=>changeOcultar(2, user)}>
+                                                <button className="btn btn-primaryP" onClick={()=>changeOcultar(2, payRoll)}>
                                                     <FontAwesomeIcon  icon={ faEye }/> <span className="icon__sm">Ver</span>
                                                 </button>
-                                                <button className="btn btn-warningP" onClick={()=>changeOcultar(3, user)}>
-                                                    <FontAwesomeIcon icon={ faUserEdit }/> <span className="icon__sm" >Editar</span>
-                                                </button>
-                                                {user.estado === 'activo' ?
-                                                    <button className="btn btn-successP" onClick={()=>activeUser(user, 1)}>
-                                                        <FontAwesomeIcon  icon={ faCheckCircle }/> <span className="icon__sm">{ user.estado }</span>
-                                                    </button>
+                                                {payRoll.holiadysPaid > 0 ?
+                                                    <div className="btn btn-successP" >
+                                                        <FontAwesomeIcon  icon={ faCheckCircle }/> <span className="icon__sm">Vacaciones Pagas</span>
+                                                    </div>
                                                     :
-                                                    <button className="btn btn-dangerP" onClick={()=>activeUser(user, 2)}>
-                                                    <FontAwesomeIcon icon={ faTimesCircle }/> <span className="icon__sm" >{ user.estado }</span>
-                                                    </button>
+                                                    <div className="btn btn-dangerP" >
+                                                    <FontAwesomeIcon icon={ faTimesCircle }/> <span className="icon__sm" >Vacaciones no Pagas</span>
+                                                    </div>
                                                 }
                                             </div>
                                         </td>

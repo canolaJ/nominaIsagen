@@ -1,29 +1,36 @@
-import React,{useState} from 'react'
-import SolicitudesModal from './modals/SolicitudesModal';
+import React,{useState, useEffect} from 'react'
+import ProccessRequestModal from './modals/ProccessRequestModal';
 import '../css/home.css';
 import { FontAwesomeIcon } from '../../node_modules/@fortawesome/react-fontawesome';
 import { faSync , faCheckCircle, faTimesCircle, faSearch ,faPlane } from '../../node_modules/@fortawesome/free-solid-svg-icons';
+import axios from 'axios';
 
 export default function Vacaciones() {
+    useEffect(()=>{
+        requestHolidaysAll();
+    },[])
     const [ocultar,setOcultar] = useState("ocultar");
     const [dataModal, setDataModal] = useState([]);
-    const [user,setUser] = useState({});
-    const [vacaciones,setVacaciones] = useState([
-        {id:1, nombres : "jonathan" , apellidos : "cañola", cc : "456789233", dateExit : "01-15-2021", dateEntry : "01-30-2021" , post : "Super Administrador", estado : "activo" , userPost : "" , result : "aprobado"},
-        {id:2, nombres : "jorge" , apellidos : "cañola", cc : "986978423",dateExit : "06-30-2021" , dateEntry : "07-15-2021" , post : "Usuario-Nomina", estado : "activo" , userPost : "" , result : "negado"},
-        {id:3, nombres : "jabian" , apellidos : "monitor", cc : "986978423", dateExit : "10-15-2021",  dateEntry : "11-30-2021" , post : "Usuario-Empleado",  estado : "inactivo" , userPost : "" , result : "proceso"},
-    ]);
+    const [vacaciones,setVacaciones] = useState([]);
     const [list, setList] = useState(vacaciones);
+    const [vacacion, setVacion] = useState([]);
+
+    const requestHolidaysAll = async ()=>{
+        const url = 'http://localhost:4000/request/requestHolidaysAll';
+        const allHolidays = await axios.get(url);
+        setVacaciones(allHolidays.data.request);
+        setList(allHolidays.data.request);
+    }
 
     const changeBtn = () => ocultar === "ocultar" ? setOcultar("visible"): setOcultar("ocultar");
 
-    const changeOcultar = (valor,dataUser) =>{
+    const changeOcultar = (valor,vacacion) =>{
         switch (valor) {
             case 1:
                 changeBtn();
                 setDataModal([valor,"Procesar solicitud de Vacaciones", "procesar",true, null]);
-                if (dataUser) {
-                    setUser(dataUser);
+                if (vacacion) {
+                    setVacion(vacacion);
                 };
                 break;
 
@@ -31,16 +38,16 @@ export default function Vacaciones() {
                 break;
         }
     }
-    const searchUser = () =>{
+    const searchList = () =>{
 
         const search = document.getElementById('search').value.toLowerCase();
-        const vacacionesFilter = vacaciones.filter(user => user.nombres.includes( search ) || user.apellidos.includes( search ) || user.cc.includes( search ));
+        const vacacionesFilter = vacaciones.filter(vaciones => vaciones.requestAuthor.nombres.includes( search ) || vaciones.requestAuthor.apellidos.includes( search ));
         setList(vacacionesFilter);
     }
     return (
         <>
         <div className={ocultar}>
-            <SolicitudesModal changeOcultar={changeOcultar} dataModal = {dataModal} user = {user}/>
+            <ProccessRequestModal requestHolidaysAll={requestHolidaysAll} changeOcultar={changeOcultar} dataModal = {dataModal} vacacion = {vacacion}/>
         </div>
         <div className="container container__home">
             <div className="row mb-2">
@@ -56,7 +63,7 @@ export default function Vacaciones() {
                 <div className="col-sm-12 col-md-5">
                     <div className="input-group mb-3">
                         <span className="input-group-text"><FontAwesomeIcon icon={ faSearch } /></span>
-                        <input type="text" className="form-control" id="search" placeholder=" ¿Qué usuario deseas buscar? " onChange={searchUser} />
+                        <input type="text" className="form-control" id="search" placeholder=" ¿Qué usuario deseas buscar? " onChange={searchList} />
                     </div>
                 </div>
             </div>
@@ -78,24 +85,24 @@ export default function Vacaciones() {
                             </tr>
                         </thead>
                         <tbody>
-                            { list.map((user)=>{
+                            { list.map((vacacion)=>{
                                 return(
-                                    <tr key={ user.id }>
-                                        <th scope="row">{ user.nombres + " " + user.apellidos }</th>
-                                        <td className="icon__sm">{ user.dateExit }</td>
-                                        <td>{ user.dateEntry }</td>
+                                    <tr key={ vacacion._id }>
+                                        <th scope="row">{ vacacion.requestAuthor.nombres + " " + vacacion.requestAuthor.apellidos }</th>
+                                        <td className="icon__sm">{ vacacion.dateExit }</td>
+                                        <td>{ vacacion.dateEntry }</td>
                                         <td>
-                                            {user.result === 'aprobado' ?
+                                            {vacacion.response === 'Aprobado' ?
                                                 <div className="bg__success text-center">
-                                                    <FontAwesomeIcon icon={faCheckCircle}/> <span className="icon__sm">{ user.result }</span>
+                                                    <FontAwesomeIcon icon={faCheckCircle}/> <span className="icon__sm">{ vacacion.response }</span>
                                                 </div>
-                                            : user.result === 'negado' ?
+                                            : vacacion.response === 'Negado' ?
                                                 <div className="bg__danger text-center">
-                                                    <FontAwesomeIcon icon={faTimesCircle}/> <span className="icon__sm">{ user.result }</span>
+                                                    <FontAwesomeIcon icon={faTimesCircle}/> <span className="icon__sm">{ vacacion.response }</span>
                                                 </div> 
                                             :
-                                                <button className="btn btn-primaryP text-center w-100" onClick = { ()=> changeOcultar(1, user) }>
-                                                    <FontAwesomeIcon icon={faSync}/> <span className="icon__sm">{ user.result }</span>
+                                                <button className="btn btn-primaryP text-center w-100" onClick = { ()=> changeOcultar(1, vacacion) }>
+                                                    <FontAwesomeIcon icon={faSync}/><span className="icon__sm"> { vacacion.response }</span>
                                                 </button>
                                             }
                                         </td>

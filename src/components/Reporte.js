@@ -1,19 +1,57 @@
-import React,{useState} from 'react'
+import React,{useState, useEffect} from 'react'
 import SolicitudesModal from './modals/SolicitudesModal';
 import '../css/home.css';
 import { FontAwesomeIcon } from '../../node_modules/@fortawesome/react-fontawesome';
 import { faUserClock, faFilePdf } from '../../node_modules/@fortawesome/free-solid-svg-icons';
+import axios from 'axios';
 
 export default function Reporte() {
+
     const [ocultar,setOcultar] = useState("ocultar");
     const [dataModal, setDataModal] = useState([]);
-    const [user,setUser] = useState({});
-    const [vacaciones,setVacaciones] = useState([
-        {id:1, nombres : "jonathan" , apellidos : "cañola", cc : "456789233" , post : "Super Administrador", salary : "1500000", estado : "activo"},
-        {id:2, nombres : "jorge" , apellidos : "cañola", cc : "986978423", post : "Usuario-Nomina", salary : "2900000", estado : "activo"},
-        {id:3, nombres : "jabian" , apellidos : "monitor", cc : "986978423", post : "Usuario-Empleado", salary : "3500000", estado : "activo"},
-    ]);
-    const [list, setList] = useState(vacaciones);
+    const [user,setUser] = useState([]);
+    const [listSalaryElder, setListSalaryElder] = useState([]);
+    const [listSalaryMinor, setListSalaryMinor] = useState([]);
+
+    useEffect(()=>{
+        getAllUsers()
+    },[]);
+
+   
+
+    const userSalaryElder = (users)=>{
+
+        const prueba = users.filter( item => parseInt(item.salary)>1000000 );
+        setListSalaryElder(prueba);
+
+    }
+
+    const userSalaryMinor = (users)=>{
+
+        const prueba = users.filter( item => parseInt(item.salary)<1000000 );
+        setListSalaryMinor(prueba);
+
+    }
+
+
+    const getAllUsers = ()=>{
+
+        const url = 'http://localhost:4000/user/';
+
+        axios.get(url)
+        .then(function (response) {
+            setUser(response.data.users)
+            userSalaryElder(response.data.users);
+            userSalaryMinor(response.data.users);
+            // console.log(response);
+        })
+        .catch(function (error) {
+            // handle error
+            console.log(error);
+        })
+    }
+
+   
 
     const changeBtn = () => ocultar === "ocultar" ? setOcultar("visible"): setOcultar("ocultar");
 
@@ -68,9 +106,9 @@ export default function Reporte() {
                             </tr>
                         </thead>
                         <tbody className="text-center">
-                            { list.map((user)=>{
+                            { listSalaryElder.map((user)=>{
                                 return(
-                                    <tr key={ user.id }>
+                                    <tr key={ user._id }>
                                         <th scope="row">{ user.nombres + " " + user.apellidos }</th>
                                         <td className="icon__sm">{ user.post }</td>
                                         <td>{ user.salary }</td>
@@ -98,9 +136,9 @@ export default function Reporte() {
                             </tr>
                         </thead>
                         <tbody className="text-center">
-                            { list.map((user)=>{
+                            { listSalaryMinor.map((user)=>{
                                 return(
-                                    <tr key={ user.id }>
+                                    <tr key={ user._id }>
                                         <th scope="row">{ user.nombres + " " + user.apellidos }</th>
                                         <td className="icon__sm">{ user.post }</td>
                                         <td>{ user.salary }</td>

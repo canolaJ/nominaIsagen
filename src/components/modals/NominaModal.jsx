@@ -38,20 +38,18 @@ export default function NominaModal({changeOcultar, dataUser , dataModal , list 
                                                         </th>
                                                     </tr>
                                                 }
-                                                { list.map((user)=>{
-                                                    return(
-                                                        <tr key={ user.id }>
-                                                            <th scope="row">{ user.nombres + " " + user.apellidos }</th>
-                                                            <td className="icon__sm">{ user.cc }</td>
-                                                            <td className="icon__sm">{ user.post }</td>
-                                                            <td>
-                                                                <button className="btn btn-primaryP w-100" onClick={()=>changeOcultar(2, user)}>
-                                                                    <FontAwesomeIcon className="icon__sm"  icon={ faCheckCircle }/> <span>Seleccionar</span>
-                                                                </button>
-                                                            </td>
-                                                        </tr>
-                                                    )
-                                                }) }
+                                                { list.nombres && 
+                                                    <tr key={ list.id }>
+                                                        <th scope="row">{ list.nombres + " " + list.apellidos }</th>
+                                                        <td className="icon__sm">{ list.cc }</td>
+                                                        <td className="icon__sm">{ list.post }</td>
+                                                        <td>
+                                                            <button className="btn btn-primaryP w-100" onClick={()=>changeOcultar(2, list)}>
+                                                                <FontAwesomeIcon className="icon__sm"  icon={ faCheckCircle }/> <span>Seleccionar</span>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                }
                                             </tbody>
                                         </table>
                                     </div>

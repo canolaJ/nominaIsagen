@@ -1,4 +1,4 @@
-import React,{useState, useContext} from 'react'
+import React,{useState, useContext, useEffect} from 'react'
 import CertificadeModal from './modals/CertificadeModal';
 import RequestModal from './modals/RequestModal';
 import CopyModal from './modals/CopyModal';
@@ -8,21 +8,32 @@ import '../css/home.css';
 import { FontAwesomeIcon } from '../../node_modules/@fortawesome/react-fontawesome';
 import { faCertificate, faPlusCircle, faFileImport, faUserEdit , faCheckCircle, faTimesCircle, faSync} from '../../node_modules/@fortawesome/free-solid-svg-icons';
 import { AuthContext } from '../auth/authContext';
+import axios from 'axios';
 
 export default function Home() {
+    useEffect(()=>{
+        requestPermissionsAll();
+    },[])
     const { userData } = useContext( AuthContext );
     const [user, setUser] = useState(userData);
     const [ocultar,setOcultar] = useState(["ocultar","ocultar","ocultar","ocultar"]);
     const [dataModal, setDataModal] = useState([]);
+    const [solicitudes,setSolicitudes] = useState([]);
 
-    const [solicitudes,setSolicitudes] = useState([
-        {id : 1,fecha : '10-01-2021' , tipoSolicitud : 'Permiso', estado : 'Aprobado'},
-        {id : 2,fecha : '12-02-2021' , tipoSolicitud : 'Vacaciones', estado : 'Negado'},
-        {id : 3,fecha : '24-03-2021' , tipoSolicitud : 'Permiso',  estado : 'Procesando'},
-        {id : 4,fecha : '24-04-2021' , tipoSolicitud : 'Vacaciones',  estado : 'Aprobado'},
-        {id : 5,fecha : '04-06-2021' , tipoSolicitud : 'Permiso',  estado : 'Procesando'},
-        {id : 6,fecha : '24-11-2021' , tipoSolicitud : 'Permiso',  estado : 'Negado'},
-    ]);
+    const requestPermissionsAll = async ()=>{
+        const url = 'http://localhost:4000/request/searchPermissionUser';
+        axios.post(url, {
+            _id:userData._id,
+          })
+          .then(function (response) {
+            setSolicitudes(response.data.request);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+        
+    }
+    
 
     const changeBtn = (valor) => valor === "ocultar" ? "visible":"ocultar";
 
@@ -58,7 +69,7 @@ export default function Home() {
     return (
         <>
             <div className={ocultar[0]}>
-                <RequestModal changeOcultar={changeOcultar} dataModal = {dataModal} user = { user }/>
+                <RequestModal  requestPermissionsAll={requestPermissionsAll} changeOcultar={changeOcultar} dataModal = {dataModal} user = { user }/>
             </div>
             <div className={ocultar[1]}>
                 <CertificadeModal changeOcultar={changeOcultar} dataModal = {dataModal} user = { user }/>
@@ -123,34 +134,34 @@ export default function Home() {
                                     </th>
                                 </tr>
                                 <tr className="bg__gray text-center">
-                                    <th scope="col" className="icon__sm">#</th>
-                                    <th scope="col">Fecha</th>
-                                    <th scope="col">Tipo de Solicitud</th>
+                                    <th scope="col" className="icon__sm">Tipo de Solicitud</th>
+                                    <th scope="col">Fecha de Salida</th>
+                                    <th scope="col">Tipo de Entrada</th>
                                     <th scope="col">Estado</th>
                                 </tr>
                             </thead>
                             <tbody className="text-center">
                                 { solicitudes.map((solicitud)=>{
                                     return(
-                                        <tr key={ solicitud.id }>
-                                            <th scope="row" className="icon__sm">{ solicitud.id }</th>
-                                            <td>{ solicitud.fecha }</td>
-                                            <td>{ solicitud.tipoSolicitud }</td>
-                                            {solicitud.estado === 'Aprobado' ?
+                                        <tr key={ solicitud._id }>
+                                            <th scope="row" className="icon__sm">{ solicitud.typeRequest }</th>
+                                            <td>{ solicitud.dateExit }</td>
+                                            <td>{ solicitud.dateEntry }</td>
+                                            {solicitud.response === 'Aprobado' ?
                                                 <td>
                                                     <div className="bg__success text-center">
-                                                        <FontAwesomeIcon icon={faCheckCircle}/> <span className="icon__sm">{ solicitud.estado }</span>
+                                                        <FontAwesomeIcon icon={faCheckCircle}/> <span className="icon__sm">{ solicitud.response }</span>
                                                     </div>
                                                 </td> :
-                                            solicitud.estado === 'Negado' ?
+                                            solicitud.response === 'Negado' ?
                                                 <td>
                                                     <div className="bg__danger text-center">
-                                                        <FontAwesomeIcon icon={faTimesCircle}/> <span className="icon__sm">{ solicitud.estado }</span>
+                                                        <FontAwesomeIcon icon={faTimesCircle}/> <span className="icon__sm">{ solicitud.response }</span>
                                                     </div>
                                                 </td> :
                                                 <td>
                                                     <div className="bg__info text-center">
-                                                        <FontAwesomeIcon icon={faSync}/> <span className="icon__sm">{ solicitud.estado }</span>
+                                                        <FontAwesomeIcon icon={faSync}/> <span className="icon__sm">{ solicitud.response }</span>
                                                     </div>
                                                 </td>}
                                         </tr>

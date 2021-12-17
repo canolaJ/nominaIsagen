@@ -25,9 +25,9 @@ export default function CertificadeModal({changeOcultar , dataModal , user }) {
                             <div className="col-sm-12 col-md-12">
                                 <h3 className="text-center mb-5">Certificado Laboral</h3>
                                 <p className="mb-4">
-                                    Se certifica que {user.sexo === "m" ? " el señor" : "la señora"} <strong>{user.nombres} {user.apellidos}</strong> identificado con la c.c <strong>{user.cc}</strong> trabaja en la Empresa
-                                    <strong> Isagen</strong> desde { user.dateEntry }, y su cargo actual es <strong>{ user.post }</strong> en el cual devenga un salario integral de 
-                                    {" $ " + user.salary }.
+                                    Se certifica que {user.sexo === "m" ? " el señor" : "la señora"} <strong>{user.nombres} {user.apellidos}</strong> identificado con la <strong>c.c {user.cc}</strong> trabaja en la Empresa
+                                    <strong> Isagen</strong> desde <strong>{ user.dateEntry }</strong>, y su cargo actual es <strong>{ user.post }</strong> en el cual devenga un salario integral de 
+                                    <strong>{" $ " + user.salary }</strong>.
                                 </p>
                                 <p>
                                     Este documento tienen una validez de 90 días calendario a partir de la fecha de expedición.

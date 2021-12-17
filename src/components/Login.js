@@ -41,6 +41,10 @@ function Login() {
                         phone : user.phone,
                         username : user.username,
                         sexo : user.sexo,
+                        salary : user.salary,
+                        post : user.post,
+                        dateEntry : user.dateEntry
+
                     }
                 }
                 dispatch(action);

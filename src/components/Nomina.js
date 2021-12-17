@@ -1,103 +1,143 @@
-import React,{useState} from 'react'
-import NominaModal from './modals/NominaModal';
-import NominaPdf from './pdf/NominaPdf';
-import '../css/home.css';
+import React,{useContext, useState} from 'react'
+// import NominaModal from './modals/NominaModal';
+import '../css/home.css'; 
 import { FontAwesomeIcon } from '../../node_modules/@fortawesome/react-fontawesome';
 import {  faSearch , faFilePdf, faAddressCard } from '../../node_modules/@fortawesome/free-solid-svg-icons';
+import NominaPdf from './pdf/NominaPdf';
 import { PDFDownloadLink } from '../../node_modules/@react-pdf/renderer';
+import axios from 'axios';
+import { AuthContext } from '../auth/authContext';
+import Swal from 'sweetalert2';
 
 export default function Nomina() {
+    const { userData } = useContext( AuthContext );
     const fecha = new Date().toLocaleDateString();
-    const users =[
-        {id:1, nombres : "jonathan" , apellidos : "cañola", cc : "456789233", phone : 3209874563 , post : "Super Administrador",salary : "3500000", estado : "activo"},
-        {id:2, nombres : "jorge" , apellidos : "cañola", cc : "986978423", phone : 3119874562 , post : "Usuario-Nomina",salary : "2500000" , estado : "activo"},
-        {id:3, nombres : "fabian" , apellidos : "monitor", cc : "986978423", phone : 3119874562 , post : "Usuario-Empleado", salary : "1500000", estado : "inactivo"},
-    ];
+    const month = new Date().getMonth();
+    const year = new Date().getUTCFullYear();
+    const dateSearch = year + "-" + (month>0 ? month+1 : month<12 ? month+1 : month) + "-30";
 
-    const permisos =[
-        {id:1, id_user: 1 , type_solicitud : "vacaciones" ,remunerado :"si",  nombres : "jonathan" , apellidos : "cañola", cc : "456789233", dateExit : "01-28-2021", dateEntry : "01-30-2021" , post : "Super Administrador", estado : "activo" , userPost : "jonathan" , result : "aprobado"},
-        {id:2, id_user: 2, type_solicitud : "permiso"  ,remunerado :"no", nombres : "jorge" , apellidos : "cañola", cc : "986978423",dateExit : "07-14-2021" , dateEntry : "08-02-2021" , post : "Usuario-Nomina", estado : "activo" , userPost : "jonathan" , result : "negado"},
-        {id:3, id_user: 3, type_solicitud : "permiso"  ,remunerado :"si", nombres : "fabian" , apellidos : "monitor", cc : "986978423", dateExit : "11-29-2021",  dateEntry : "11-30-2021" , post : "Usuario-Empleado",  estado : "inactivo" , userPost : "jonathan" , result : "proceso"},
-        {id:4, id_user: 1 , type_solicitud : "permiso" ,remunerado :"no",  nombres : "jonathan" , apellidos : "cañola", cc : "456789233", dateExit : "01-28-2021", dateEntry : "01-30-2021" , post : "Super Administrador", estado : "activo" , userPost : "jonathan" , result : "aprobado"},
-        {id:5, id_user: 2, type_solicitud : "permiso"  ,remunerado :"no", nombres : "jorge" , apellidos : "cañola", cc : "986978423",dateExit : "07-14-2021" , dateEntry : "07-15-2021" , post : "Usuario-Nomina", estado : "activo" , userPost : "jonathan" , result : "negado"},
-        {id:6, id_user: 3, type_solicitud : "permiso"  ,remunerado :"si", nombres : "fabian" , apellidos : "monitor", cc : "986978423", dateExit : "11-29-2021",  dateEntry : "11-30-2021" , post : "Usuario-Empleado",  estado : "inactivo" , userPost : "jonathan" , result : "proceso"},
-        {id:7, id_user: 2, type_solicitud : "permiso"  ,remunerado :"no", nombres : "jorge" , apellidos : "cañola", cc : "986978423",dateExit : "07-18-2021" , dateEntry : "07-20-2021" , post : "Usuario-Nomina", estado : "activo" , userPost : "jonathan" , result : "negado"},
-    ];
-
-    const [list,setList] = useState([]);
-    const [ocultar,setOcultar] = useState("ocultar");
-    const [dataModal, setDataModal] = useState([]);
     const [userSelected, setUserSelected] = useState([]);
     const [value_permission, setValue_permission] = useState(0);
     const [value_vacaciones, setValue_vacaciones] = useState(0);
     const [value_total, setValue_total] = useState(0);
-    const changeBtn = () => ocultar === "ocultar" ? setOcultar("visible"): setOcultar("ocultar");
 
-    const dataUser = (data) =>{
-        setUserSelected(data);
-        console.log(data);
-    }
 
-    const permissionUser = (user_id) => {
+
+    const permissionUser = (dataRequest, salary) => {
         let number_days = 0;
-        let vaciones = 0;
+        let vacaciones = 0;
         setValue_permission(0);
-        permisos.forEach(permiso => {
-            if(permiso.remunerado === 'no' && permiso.id_user === user_id && permiso.type_solicitud === "permiso"){
-                number_days = ((new Date(permiso.dateExit) - new Date(permiso.dateEntry))/-86400)/1000;
+        dataRequest.forEach(request => {
+            if(request.payRequest === 'No' && request.typeRequest === "Permiso"){
+
+                number_days = ((new Date(request.dateExit) - new Date(request.dateEntry))/-172800)/1000;
                 number_days += number_days;
             }
-            else if(permiso.remunerado === 'si' && permiso.id_user === user_id && permiso.type_solicitud === "vacaciones"){
-                vaciones = ((new Date(permiso.dateExit) - new Date(permiso.dateEntry))/-86400)/1000;
-                vaciones += vaciones;
+            else if(request.payRequest === 'Si' && request.typeRequest === "Vacaciones"){
+                vacaciones = ((new Date(request.dateExit) - new Date(request.dateEntry))/-172800)/1000;
+                vacaciones += vacaciones;
+
             }
         });
-        let user = users.find(user => user.id === user_id);
-        let days_permission = ((parseInt(user.salary)/30)*number_days).toFixed(0);
-        let days_vacaciones = ((parseInt(user.salary)/30)*vaciones).toFixed(0);
-        let totalToPay = parseInt(user.salary) - (parseInt(days_permission)) + (parseInt(days_vacaciones));
+        let days_permission = ((parseInt(salary)/30)*number_days).toFixed(0);
+        let days_vacaciones = ((parseInt(salary)/30)*vacaciones).toFixed(0);
+        let totalToPay = parseInt(salary) - (parseInt(days_permission)) + (parseInt(days_vacaciones));
+
         setValue_permission(days_permission);
-        setValue_vacaciones(days_vacaciones)
+        setValue_vacaciones(days_vacaciones);
         setValue_total(totalToPay);
     }
-    const changeOcultar = (valor,data) =>{
-        switch (valor) {
-            case 1:
-                searchUser();
-                changeBtn();
-                setDataModal([valor,"Elegir Usuario ", null,true, null]);
-                break;
 
-            case 2:
-                dataUser(data);
-                permissionUser(data.id);
-                changeBtn();
-                break;
-            default:
-                break;
+    const searchUser = () =>{
+
+        const search = document.getElementById('search').value.toLowerCase();
+        if(search){
+            const url = 'http://localhost:4000/user/searchUserCc';
+            axios.post(url, {
+                cc:search,
+                dateExit : dateSearch,
+            })
+            .then(function (response) {
+                if(response.data.isOk){
+                    setUserSelected(response.data.user);
+                    const salary = response.data.user.salary;
+                    const dataRequest = response.data.request;
+                    permissionUser(dataRequest, salary);
+                }else{
+                    Swal.fire({
+                        title: 'No encontrado!',
+                        text: 'La cédula no tiene ningun usuario asociado !',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    })
+                }
+
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        }else{
+            Swal.fire({
+                title: 'Vacío!',
+                text: 'El campo de cédula no tiene ningun valor !',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
         }
     }
-    const searchUser = () =>{
-        const search = document.getElementById('search').value.toLowerCase();
-        const usersFilter = users.filter(user => user.nombres.includes( search ) || user.apellidos.includes( search ) || user.cc.includes( search ));
-        setList(usersFilter);
+
+    const createPayRoll = () =>{
+
+        const url = 'http://localhost:4000/payRoll/createPayRoll';
+        axios.post(url, {
+            dateGenerated : dateSearch,
+            holiadysPaid : value_vacaciones,
+            permissionPaid : 0,
+            permissionNotPaid : value_permission,
+            payRollAuthor : userSelected.id,
+            userResponseRoll : userData._id,
+            totalPayRoll : value_total,
+            salary : userSelected.salary
+          })
+          .then(function (response) {
+              if(response.data.isOk){
+                Swal.fire({
+                    position: 'center',
+                    icon: 'success',
+                    title: 'Nómina Creada con éxito',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+              }else{
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Nómina No Creada!',
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                })
+              }
+
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
     }
     return (
         <>
-            <div className={ocultar}>
+            {/* <div className={ocultar}>
                 <NominaModal changeOcultar={changeOcultar} dataUser={ dataUser } dataModal = {dataModal} list = { list }/>
-            </div>
+            </div> */}
             <div className="container container__nomina p-md-4">
                 <div className="row mb-2">
                     <div className="col-sm-12 col-md-12">
                         <div className="row">
                             <div className="col-sm-12 col-sm-4 d-flex flex-row align-items-center justify-content-between">
                                 <h3 className="ms-2"><FontAwesomeIcon icon={ faAddressCard } /> Nómina</h3>
-                                <PDFDownloadLink 
+                                <PDFDownloadLink
                                     document={ <NominaPdf userSelected = { userSelected } value_vacaciones = { value_vacaciones } value_permission = { value_permission } value_total = {value_total }/> } 
                                     fileName="nomina.pdf">
                                     <button
-                                        type="button"
+                                        type="button" onClick={ createPayRoll }
                                         className="btn btn-successP me-sm-1 me-lg-0">
                                         <FontAwesomeIcon icon={ faFilePdf } /> Generar Nómina
                                     </button>
@@ -111,8 +151,8 @@ export default function Nomina() {
                     <div className="col-sm-12 col-md-5">
                         <div className="input-group mb-3">
                             <span className="input-group-text"><FontAwesomeIcon icon={ faSearch } /></span>
-                            <input type="text" className="form-control" id="search" placeholder=" ¿Qué usuario deseas buscar? "/>
-                            <button className="btn btn-primaryInput" onClick={()=>changeOcultar(1)}>Buscar</button>
+                            <input type="text" className="form-control" id="search" placeholder=" ¿Qué usuario deseas buscar por Cédula? "/>
+                            <button className="btn btn-primaryInput" onClick={()=>searchUser()}>Buscar</button>
                         </div>
                     </div>
                 </div>
@@ -128,38 +168,44 @@ export default function Nomina() {
                     </div>
                     <div className="col-sm-12 col-md-6">
                         <div className="input-group mb-3">
-                            <span className="input-group-text bg-secondary text-light" id="basic-addon3">Fecha:</span>
+                            <span className="input-group-text bg-secondary text-light" id="basic-addon3">Fecha :</span>
                             <input type="text" className="form-control" disabled placeholder={ fecha } aria-describedby="basic-addon3"/>
                         </div>
                     </div>
                     <div className="col-sm-12 col-md-6">
                         <div className="input-group mb-3">
-                            <span className="input-group-text bg-secondary text-light" id="basic-addon3">Nombre:</span>
+                            <span className="input-group-text bg-secondary text-light" id="basic-addon3">Nombre :</span>
                             <input type="text" className="form-control" placeholder={ userSelected.nombres } disabled aria-describedby="basic-addon3"/>
                         </div>
                     </div>
                     <div className="col-sm-12 col-md-6">
                         <div className="input-group mb-3">
-                            <span className="input-group-text bg-secondary text-light" id="basic-addon3">Apellidos:</span>
+                            <span className="input-group-text bg-secondary text-light" id="basic-addon3">Apellidos :</span>
                             <input type="text" className="form-control" placeholder={ userSelected.apellidos } disabled aria-describedby="basic-addon3"/>
                         </div>
                     </div>
                     <div className="col-sm-12 col-md-6">
                         <div className="input-group mb-3">
-                            <span className="input-group-text bg-secondary text-light" id="basic-addon3">Número de documento:</span>
+                            <span className="input-group-text bg-secondary text-light" id="basic-addon3">Número de documento :</span>
                             <input type="text" className="form-control" placeholder={ userSelected.cc } disabled aria-describedby="basic-addon3"/>
                         </div>
                     </div>
                     <div className="col-sm-12 col-md-6">
                         <div className="input-group mb-3">
-                            <span className="input-group-text bg-secondary text-light" id="basic-addon3">Cargo:</span>
+                            <span className="input-group-text bg-secondary text-light" id="basic-addon3">Cargo :</span>
                             <input type="text" className="form-control" placeholder={ userSelected.post } disabled aria-describedby="basic-addon3"/>
                         </div>
                     </div>
                     <div className="col-sm-12 col-md-6">
                         <div className="input-group mb-3">
-                            <span className="input-group-text bg-secondary text-light" id="basic-addon3">Salario Base:</span>
+                            <span className="input-group-text bg-secondary text-light" id="basic-addon3">Salario Base :</span>
                             <input type="text" className="form-control" placeholder={ userSelected.salary } disabled aria-describedby="basic-addon3"/>
+                        </div>
+                    </div>
+                    <div className="col-sm-12 col-md-6">
+                        <div className="input-group mb-3">
+                            <span className="input-group-text bg-secondary text-light" id="basic-addon3">Teléfono :</span>
+                            <input type="text" className="form-control" placeholder={ userSelected.phone } disabled aria-describedby="basic-addon3"/>
                         </div>
                     </div>
                 </div>

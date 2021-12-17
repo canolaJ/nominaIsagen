@@ -7,6 +7,7 @@ import User  from "../components/User";
 import Reporte  from "../components/Reporte";
 // import NoFount  from "../components/NoFount";
 import Navigation from "../components/Navigation";
+import PayRoll from "../components/PayRoll";
 
 
   export function AdminRouter() {
@@ -20,6 +21,7 @@ import Navigation from "../components/Navigation";
                 <Route exact path="/admin/user" element={<User/>}/>
                 <Route exact path="/admin/reporte" element={<Reporte/>}/>
                 <Route exact path="/admin/nomina" element={<Nomina/>}/>
+                <Route exact path="/admin/payRoll" element={<PayRoll/>}/>
 
                 {/* <Route path="*" element={<NoFount/>}/> */}
             </Routes>
