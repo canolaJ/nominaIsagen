@@ -12,7 +12,7 @@ import { AuthContext } from '../auth/authContext';
 import Swal from 'sweetalert2';
 
 export default function Navigation() {
-    const { dispatch } = useContext( AuthContext);
+    const { dispatch,userData } = useContext( AuthContext);
     
     const navigate = useNavigate();
 
@@ -47,30 +47,64 @@ export default function Navigation() {
                     </button>
                     <div className="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                            <li className="nav-item ms-md-2">
-                                <NavLink className="nav-link" aria-current="page" to='/admin/home'><FontAwesomeIcon icon={faChevronCircleRight} /> Inicio</NavLink>
-                            </li>
-                            <li className="nav-item dropdown">
-                                <button className="btn ms-2 dropdown-toggle"  id="menuDropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <FontAwesomeIcon icon={faTasks} />  Procesar
-                                </button>
-                                <ul className="dropdown-menu" aria-labelledby="menuDropdown">
-                                    <li><NavLink className="dropdown-item" to='/admin/permisos'><FontAwesomeIcon icon={faUserClock} /> Permisos</NavLink></li>
-                                    <li><NavLink className="dropdown-item" to='/admin/vacaciones'><FontAwesomeIcon icon={faPlane} /> Vacaciones</NavLink></li>
-                                </ul>
-                            </li>
-                            <li className="nav-item">
-                                <NavLink className="nav-link" aria-current="page" to='/admin/user'><FontAwesomeIcon icon={faUserFriends} /> Usuarios</NavLink>
-                            </li>
-                            <li className="nav-item">
-                                <NavLink className="nav-link" aria-current="page" to='/admin/reporte'><FontAwesomeIcon icon={faFileDownload} /> Reportes</NavLink>
-                            </li>
-                            <li className="nav-item">
-                                <NavLink className="nav-link" aria-current="page" to='/admin/nomina'><FontAwesomeIcon icon={faAddressCard} /> Crear Nómina</NavLink>
-                            </li>
-                            <li className="nav-item">
-                                <NavLink className="nav-link" aria-current="page" to='/admin/payRoll'><FontAwesomeIcon icon={faAddressCard} /> Nóminas</NavLink>
-                            </li>
+                            { userData.post=== 'Administrador' ?
+                            <>
+                                <li className="nav-item ms-md-2">
+                                    <NavLink className="nav-link" aria-current="page" to='/admin/home'><FontAwesomeIcon icon={faChevronCircleRight} /> Inicio</NavLink>
+                                </li>
+                                <li className="nav-item dropdown">
+                                    <button className="btn ms-2 dropdown-toggle"  id="menuDropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <FontAwesomeIcon icon={faTasks} />  Procesar
+                                    </button>
+                                    <ul className="dropdown-menu" aria-labelledby="menuDropdown">
+                                        <li><NavLink className="dropdown-item" to='/admin/permisos'><FontAwesomeIcon icon={faUserClock} /> Permisos</NavLink></li>
+                                        <li><NavLink className="dropdown-item" to='/admin/vacaciones'><FontAwesomeIcon icon={faPlane} /> Vacaciones</NavLink></li>
+                                    </ul>
+                                </li>
+                                <li className="nav-item">
+                                    <NavLink className="nav-link" aria-current="page" to='/admin/user'><FontAwesomeIcon icon={faUserFriends} /> Usuarios</NavLink>
+                                </li>
+                                <li className="nav-item">
+                                    <NavLink className="nav-link" aria-current="page" to='/admin/reporte'><FontAwesomeIcon icon={faFileDownload} /> Reportes</NavLink>
+                                </li>
+                                <li className="nav-item">
+                                    <NavLink className="nav-link" aria-current="page" to='/admin/nomina'><FontAwesomeIcon icon={faAddressCard} /> Crear Nómina</NavLink>
+                                </li>
+                                <li className="nav-item">
+                                    <NavLink className="nav-link" aria-current="page" to='/admin/payRoll'><FontAwesomeIcon icon={faAddressCard} /> Nóminas</NavLink>
+                                </li>
+                            </>
+                            :   userData.post=== 'Usuario-Nomina' ?
+                            <>
+                                <li className="nav-item ms-md-2">
+                                    <NavLink className="nav-link" aria-current="page" to='/admin/home'><FontAwesomeIcon icon={faChevronCircleRight} /> Inicio</NavLink>
+                                </li>
+                                <li className="nav-item dropdown">
+                                    <button className="btn ms-2 dropdown-toggle"  id="menuDropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <FontAwesomeIcon icon={faTasks} />  Procesar
+                                    </button>
+                                    <ul className="dropdown-menu" aria-labelledby="menuDropdown">
+                                        <li><NavLink className="dropdown-item" to='/admin/permisos'><FontAwesomeIcon icon={faUserClock} /> Permisos</NavLink></li>
+                                        <li><NavLink className="dropdown-item" to='/admin/vacaciones'><FontAwesomeIcon icon={faPlane} /> Vacaciones</NavLink></li>
+                                    </ul>
+                                </li>
+                                <li className="nav-item">
+                                    <NavLink className="nav-link" aria-current="page" to='/admin/reporte'><FontAwesomeIcon icon={faFileDownload} /> Reportes</NavLink>
+                                </li>
+                                <li className="nav-item">
+                                    <NavLink className="nav-link" aria-current="page" to='/admin/nomina'><FontAwesomeIcon icon={faAddressCard} /> Crear Nómina</NavLink>
+                                </li>
+                                <li className="nav-item">
+                                    <NavLink className="nav-link" aria-current="page" to='/admin/payRoll'><FontAwesomeIcon icon={faAddressCard} /> Nóminas</NavLink>
+                                </li>
+                            </>
+                            :
+                            <>
+                                <li className="nav-item ms-md-2">
+                                    <NavLink className="nav-link" aria-current="page" to='/admin/home'><FontAwesomeIcon icon={faChevronCircleRight} /> Inicio</NavLink>
+                                </li>
+                            </>
+                            }
                         </ul>
                         <div>
                             <button className="btn btn-dangerP " onClick={ logout }><FontAwesomeIcon icon={faTimesCircle} /> Cerrar Sesión</button>
